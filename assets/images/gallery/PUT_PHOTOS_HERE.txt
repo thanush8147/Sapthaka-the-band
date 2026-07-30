@@ -1,0 +1,1 @@
+Put gallery photos here (e.g. photo1.jpg). Referenced in index.html gallery section.

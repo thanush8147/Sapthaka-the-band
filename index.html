@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ============================================================
+     CUSTOMIZE: Page title (shows in browser tab) and description
+     ============================================================ -->
+<title>SAPTHAKA Studio</title>
+<meta name="description" content="An independent music studio — recording, mixing, and mentoring.">
+
+<style>
+/* =========================================================
+   DESIGN TOKENS
+   This site uses no external fonts, icons, or CDNs on purpose,
+   so it keeps working with zero internet connection (open the
+   file directly by double-clicking index.html).
+   ========================================================= */
+:root{
+  --bg:        #14110d;   /* near-black, warm charcoal */
+  --surface:   #1e1a15;   /* card/panel background */
+  --surface-2: #262019;   /* slightly lighter panel */
+  --line:      #35302a;   /* hairline borders */
+  --text:      #f3ede1;   /* warm off-white */
+  --muted:     #9a9184;   /* secondary text */
+  --amber:     #e2a13d;   /* primary accent */
+  --copper:    #c1502e;   /* secondary accent */
+
+  --display: Georgia, 'Times New Roman', serif;
+  --body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+*{ box-sizing: border-box; margin:0; padding:0; }
+html{ scroll-behavior: smooth; }
+body{
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+img{ max-width:100%; display:block; }
+a{ color: inherit; }
+section{ padding: 90px 24px; max-width: 1120px; margin: 0 auto; }
+h1,h2,h3{ font-family: var(--display); font-weight: 700; letter-spacing: 0.2px; }
+.eyebrow{
+  font-family: var(--mono); text-transform: uppercase; letter-spacing: 2.5px;
+  font-size: 12px; color: var(--amber); margin-bottom: 14px; display:block;
+}
+.section-head{ max-width: 640px; margin-bottom: 48px; }
+.section-head h2{ font-size: clamp(28px, 4vw, 40px); margin-bottom: 12px; }
+.section-head p{ color: var(--muted); font-size: 16px; }
+button{ font-family: var(--body); cursor:pointer; }
+:focus-visible{ outline: 2px solid var(--amber); outline-offset: 3px; }
+
+/* ---------- NAV ---------- */
+header{
+  position: sticky; top:0; z-index: 50;
+  background: rgba(20,17,13,0.9);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--line);
+}
+.nav-wrap{
+  max-width: 1120px; margin: 0 auto; padding: 16px 24px;
+  display:flex; align-items:center; justify-content: space-between;
+}
+.logo{ font-family: var(--display); font-size: 20px; letter-spacing: 1px; }
+.logo span{ color: var(--amber); }
+nav ul{ list-style:none; display:flex; gap: 28px; }
+nav a{
+  text-decoration:none; font-size: 14px; color: var(--muted);
+  transition: color .2s;
+}
+nav a:hover{ color: var(--text); }
+.nav-toggle{
+  display:none; background:none; border:1px solid var(--line); color: var(--text);
+  width:40px; height:40px; border-radius:6px; align-items:center; justify-content:center;
+}
+.nav-toggle svg{ width:20px; height:20px; }
+
+@media (max-width: 760px){
+  nav ul{
+    position:absolute; top:100%; left:0; right:0; flex-direction:column;
+    background: var(--surface); border-bottom: 1px solid var(--line);
+    padding: 12px 24px; gap: 4px; display:none;
+  }
+  nav ul.open{ display:flex; }
+  nav ul li a{ display:block; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .nav-toggle{ display:flex; }
+}
+
+/* ---------- HERO (signature: animated waveform) ---------- */
+.hero{
+  position:relative; padding: 120px 24px 100px; overflow:hidden;
+  border-bottom: 1px solid var(--line);
+}
+.hero-inner{ max-width: 1120px; margin:0 auto; position:relative; z-index:2; }
+.hero h1{
+  font-size: clamp(38px, 7vw, 74px); line-height:1.02; max-width: 820px;
+}
+.hero h1 em{ color: var(--amber); font-style: normal; }
+.hero p.lede{
+  margin-top: 22px; max-width: 560px; color: var(--muted); font-size: 18px;
+}
+.hero-ctas{ display:flex; gap:16px; margin-top: 36px; flex-wrap:wrap; }
+.btn{
+  display:inline-block; padding: 14px 26px; border-radius: 2px;
+  font-size: 14px; letter-spacing: 0.4px; text-decoration:none;
+  border: 1px solid transparent; transition: transform .15s ease, background .2s;
+}
+.btn-primary{ background: var(--amber); color: #14110d; font-weight:600; }
+.btn-primary:hover{ transform: translateY(-2px); }
+.btn-ghost{ border-color: var(--line); color: var(--text); }
+.btn-ghost:hover{ border-color: var(--amber); color: var(--amber); }
+
+/* animated waveform bars, pure CSS, sits behind hero text */
+.waveform{
+  position:absolute; left:0; right:0; bottom:0; height: 140px;
+  display:flex; align-items:flex-end; gap: 4px; padding: 0 24px;
+  opacity: 0.5; z-index:1;
+}
+.waveform i{
+  flex:1; background: linear-gradient(180deg, var(--copper), var(--amber));
+  border-radius: 2px 2px 0 0; opacity:0.55;
+  animation: bar 1.8s ease-in-out infinite;
+}
+@keyframes bar{
+  0%,100%{ transform: scaleY(0.25); }
+  50%{ transform: scaleY(1); }
+}
+@media (prefers-reduced-motion: reduce){
+  .waveform i{ animation: none; transform: scaleY(0.5); }
+  html{ scroll-behavior: auto; }
+}
+
+/* ---------- CREW ---------- */
+.crew-grid{
+  display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 28px;
+}
+.crew-card{
+  background: var(--surface); border:1px solid var(--line); border-radius:4px; overflow:hidden;
+}
+.crew-photo{
+  width:100%; aspect-ratio: 4/5; object-fit:cover; background: var(--surface-2);
+}
+.crew-body{ padding: 20px; }
+.crew-body h3{ font-size:19px; margin-bottom:2px; }
+.crew-role{
+  font-family: var(--mono); font-size:12px; color: var(--amber);
+  text-transform:uppercase; letter-spacing:1px; display:block; margin-bottom:12px;
+}
+.crew-body p{ color: var(--muted); font-size: 14.5px; }
+
+/* ---------- MUSIC SAMPLES ---------- */
+.track-list{ display:flex; flex-direction:column; border-top:1px solid var(--line); }
+.track{
+  display:flex; align-items:center; gap:20px; padding: 20px 4px;
+  border-bottom:1px solid var(--line);
+}
+.track-index{ font-family: var(--mono); color: var(--muted); width: 28px; font-size:14px; }
+.track-meta{ flex:1; min-width:150px; }
+.track-meta h4{ font-size:16px; font-weight:600; }
+.track-meta span{ font-size:13px; color: var(--muted); }
+.track audio{ width: 100%; max-width: 340px; height: 36px; }
+/* keep native audio controls; filter gives it a slight tint to match theme */
+.track audio{ filter: invert(0.87) hue-rotate(180deg) contrast(0.9); border-radius: 20px; }
+
+/* ---------- EVENTS ---------- */
+.event-list{ display:flex; flex-direction:column; gap:0; border-top:1px solid var(--line); }
+.event{
+  display:grid; grid-template-columns: 90px 1fr auto; gap:20px; align-items:center;
+  padding: 22px 4px; border-bottom:1px solid var(--line);
+}
+.event-date{ font-family: var(--mono); text-align:center; }
+.event-date .day{ font-size:26px; color:var(--amber); display:block; line-height:1; }
+.event-date .mon{ font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+.event-info h4{ font-size:17px; }
+.event-info span{ color:var(--muted); font-size:14px; }
+.event .btn{ padding: 10px 18px; font-size:13px; white-space:nowrap; }
+@media (max-width:600px){
+  .event{ grid-template-columns: 60px 1fr; }
+  .event .btn{ grid-column: 1 / -1; justify-self:start; margin-top:8px; }
+}
+
+/* ---------- GALLERY ---------- */
+.gallery-grid{
+  display:grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap:14px;
+}
+.gallery-item{
+  position:relative; aspect-ratio: 1/1; overflow:hidden; border-radius:3px;
+  border:1px solid var(--line); cursor:pointer; background: var(--surface-2);
+}
+.gallery-item img, .gallery-item video{
+  width:100%; height:100%; object-fit:cover; transition: transform .3s;
+}
+.gallery-item:hover img, .gallery-item:hover video{ transform: scale(1.06); }
+.gallery-tag{
+  position:absolute; bottom:8px; left:8px; background: rgba(20,17,13,0.75);
+  font-family: var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:1px;
+  padding:4px 8px; border-radius:2px;
+}
+/* lightbox */
+.lightbox{
+  position:fixed; inset:0; background: rgba(10,8,6,0.92); display:none;
+  align-items:center; justify-content:center; z-index:100; padding:24px;
+}
+.lightbox.open{ display:flex; }
+.lightbox-content{ max-width: 900px; width:100%; }
+.lightbox-content img, .lightbox-content video{ width:100%; max-height:80vh; object-fit:contain; }
+.lightbox-close{
+  position:absolute; top:24px; right:24px; background:none; border:1px solid var(--line);
+  color:var(--text); width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+}
+
+/* ---------- CONTACT & SOCIAL ---------- */
+.contact-grid{
+  display:grid; grid-template-columns: 1fr 1fr; gap: 48px;
+}
+@media (max-width: 700px){ .contact-grid{ grid-template-columns: 1fr; } }
+.contact-list{ display:flex; flex-direction:column; gap:16px; }
+.contact-row{
+  display:flex; align-items:center; gap:14px; padding:14px 16px;
+  background: var(--surface); border:1px solid var(--line); border-radius:4px;
+  text-decoration:none;
+}
+.contact-row:hover{ border-color: var(--amber); }
+.icon{ width:20px; height:20px; flex-shrink:0; color: var(--amber); }
+.contact-row .label{ font-size:12px; color:var(--muted); display:block; }
+.contact-row .value{ font-size:15px; }
+.socials{ display:flex; gap:12px; margin-top: 8px; }
+.social-btn{
+  width:46px; height:46px; border-radius:50%; border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center; text-decoration:none;
+}
+.social-btn:hover{ border-color: var(--amber); }
+.social-btn svg{ width:20px; height:20px; }
+
+/* ---------- CAREERS ---------- */
+.careers-list{ display:flex; flex-direction:column; gap:0; border-top:1px solid var(--line); }
+.career{
+  display:flex; justify-content:space-between; align-items:center; gap:16px;
+  padding: 20px 4px; border-bottom:1px solid var(--line); flex-wrap:wrap;
+}
+.career h4{ font-size:16px; }
+.career span{ color:var(--muted); font-size:13px; }
+
+/* ---------- FOOTER ---------- */
+footer{
+  border-top: 1px solid var(--line); padding: 36px 24px; text-align:center;
+  color: var(--muted); font-size: 13px;
+}
+</style>
+</head>
+<body>
+
+<!-- =========================================================
+     NAVIGATION
+     CUSTOMIZE: studio name in .logo
+     ========================================================= -->
+<header>
+  <div class="nav-wrap">
+    <div class="logo">SAPTHAKA</div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <nav>
+      <ul id="navMenu">
+        <li><a href="#crew">Crew</a></li>
+        <li><a href="#music">Music</a></li>
+        <li><a href="#events">Events</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#careers">Careers</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- =========================================================
+     HERO
+     CUSTOMIZE: headline, sub-line, and the two button links
+     ========================================================= -->
+<section class="hero" style="padding-top:0;">
+  <div class="hero-inner">
+    <span class="eyebrow">Independent recording studio</span>
+    <h1>We record the sound<br>only <em>you</em> could make.</h1>
+    <p class="lede">A small crew, a well-tuned room, and no interest in making you sound like anyone else. Tracking, mixing, and mentoring — all under one roof.</p>
+    <div class="hero-ctas">
+      <a href="#music" class="btn btn-primary">Hear a sample</a>
+      <a href="#contact" class="btn btn-ghost">Book a session</a>
+    </div>
+  </div>
+  <!-- decorative animated waveform, purely visual, no customization needed -->
+  <div class="waveform" id="waveform" aria-hidden="true"></div>
+</section>
+
+<!-- =========================================================
+     CREW
+     CUSTOMIZE: for each member — photo path, name, role, 1-2 line bio
+     Duplicate a .crew-card block to add more members.
+     Photo path: put the file in assets/images/crew/ and point to it.
+     ========================================================= -->
+<section id="crew">
+  <div class="section-head">
+    <span class="eyebrow">Who's behind the desk</span>
+    <h2>Meet the crew</h2>
+    <p>The people you'll actually work with when you book a session.</p>
+  </div>
+  <div class="crew-grid">
+
+    <div class="crew-card">
+      <!-- CUSTOMIZE: replace src with real photo, e.g. assets/images/crew/1.jpg -->
+      <img class="crew-photo" src="assets/images/crew/ashish_image.jpeg" alt="Photo of crew member 1" onerror="this.style.background='#262019'; this.src='';">
+      <div class="crew-body">
+        <h3>Vedang Druv</h3>
+        <span class="crew-role">lead vocalist</span>
+        <p>Short bio goes here — years of experience, specialties, or a memorable credit. Two sentences is plenty.</p>
+      </div>
+    </div>
+
+    <div class="crew-card">
+      <img class="crew-photo" src="assets/images/crew/arjun_das_image.jpeg" alt="Photo of crew member 2" onerror="this.style.background='#262019'; this.src='';">
+      <div class="crew-body">
+        <h3>Arjun Das</h3>
+        <span class="crew-role">Guitarist</span>
+        <p>Short bio goes here.</p>
+      </div>
+    </div>
+
+    <div class="crew-card">
+      <img class="crew-photo" src="assets/images/crew/silash_image.jpeg" alt="Photo of crew member 3" onerror="this.style.background='#262019'; this.src='';">
+      <div class="crew-body">
+        <h3>Silash lohar</h3>
+        <span class="crew-role">Drummer</span>
+        <p>Short bio goes here.</p>
+      </div>
+    </div>
+
+    <!-- Duplicate the block above for each additional crew member -->
+
+  </div>
+</section>
+
+<!-- =========================================================
+     MUSIC SAMPLE
+     CUSTOMIZE: put your audio file(s) in assets/audio/ and update
+     the <audio src="..."> path, track title, and duration/genre tag.
+     ========================================================= -->
+<section id="music">
+  <div class="section-head">
+    <span class="eyebrow">A quick listen</span>
+    <h2>From the studio floor</h2>
+    <p>A sample or two so you know what the room sounds like.</p>
+  </div>
+  <div class="track-list">
+
+    <div class="track">
+      <span class="track-index">01</span>
+      <div class="track-meta">
+        <h4>Sample Track Title</h4>
+        <span>Genre · Recorded 2026</span>
+      </div>
+      <!-- CUSTOMIZE: swap the src path for your own audio file -->
+      <audio controls src="assets/audio/AUDIO2.mp3"></audio>
+    </div>
+
+    <div class="track">
+      <span class="track-index">02</span>
+      <div class="track-meta">
+        <h4>Second Sample Title</h4>
+        <span>Genre · Recorded 2026</span>
+      </div>
+      <audio controls src="assets/audio/audio1.mp3"></audio>
+    </div>
+
+    <!-- Duplicate a .track block for each additional sample -->
+
+  </div>
+</section>
+
+<!-- =========================================================
+     UPCOMING EVENTS
+     CUSTOMIZE: date, month, event name, venue/details, and the
+     ticket/RSVP link (or leave "#" and change the label to
+     "Details soon" if there's nothing to link yet).
+     ========================================================= -->
+<section id="events">
+  <div class="section-head">
+    <span class="eyebrow">On the calendar</span>
+    <h2>Upcoming events</h2>
+    <p>Open sessions, showcases, and workshops.</p>
+  </div>
+  <div class="event-list">
+
+    <div class="event">
+      <div class="event-date"><span class="day">--</span><span class="mon">---</span></div>
+      <div class="event-info">
+        <h4>-----------------</h4>
+        <span>----------------------------</span>
+      </div>
+      <a href="#" class="btn btn-ghost">-----</a>
+    </div>
+
+    <div class="event">
+      <div class="event-date"><span class="day">--</span><span class="mon">-----</span></div>
+      <div class="event-info">
+        <h4>----------------</h4>
+        <span>----------------------</span>
+      </div>
+      <a href="#" class="btn btn-ghost">---------</a>
+    </div>
+
+    <!-- Duplicate a .event block for each additional event -->
+
+  </div>
+</section>
+
+<!-- =========================================================
+     GALLERY (photos + past event videos)
+     CUSTOMIZE: put files in assets/images/gallery/ (photos) or
+     assets/video/ (clips), then update src + tag text below.
+     For a video item, change data-type="video" and use a <video>
+     tag with a poster image instead of <img>.
+     ========================================================= -->
+<section id="gallery">
+  <div class="section-head">
+    <span class="eyebrow">Behind the scenes</span>
+    <h2>Gallery</h2>
+    <p>Sessions, past events, and studio life. Click any tile to view larger.</p>
+  </div>
+  <div class="gallery-grid" id="galleryGrid">
+
+    <div class="gallery-item" data-type="image" data-src="assets/images/gallery/crew_image.jpeg">
+      <img src="assets/images/gallery/crew_image.jpeg" alt="Studio photo 1">
+      <span class="gallery-tag">Photo</span>
+    </div>
+
+    <div class="gallery-item" data-type="video" data-src="assets/video/video1.mp4">
+      <video muted src="assets/video/video1.mp4"></video>
+      <span class="gallery-tag">Video</span>
+    </div>
+
+    <div class="gallery-item" data-type="image" data-src="assets/images/gallery/crew1_image.jpeg">
+      <img src="assets/images/gallery/crew1_image.jpeg" alt="Studio photo 2">
+      <span class="gallery-tag">Photo</span>
+    </div>
+
+    <div class="gallery-item" data-type="image" data-src="assets/images/gallery/crew2_image.jpeg">
+      <img src="assets/images/gallery/crew2_image.jpeg" alt="Studio photo 3">
+      <span class="gallery-tag">Photo</span>
+    </div>
+
+    <!-- Duplicate a .gallery-item block for each additional photo/video -->
+
+  </div>
+</section>
+
+<!-- lightbox overlay used by the gallery clicks, no customization needed -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <div class="lightbox-content" id="lightboxContent"></div>
+</div>
+
+<!-- =========================================================
+     CAREERS
+     CUSTOMIZE: role name, short description, and the mailto
+     address / subject line crew applicants should use.
+     ========================================================= -->
+<section id="careers">
+  <div class="section-head">
+    <span class="eyebrow">Join us</span>
+    <h2>Careers</h2>
+    <p>We're a small crew and we grow slowly — but if one of these fits, reach out.</p>
+  </div>
+  <div class="careers-list">
+
+    <div class="career">
+      <div>
+        <h4>------------------</h4>
+        <span>------- · ----- </span>
+      </div>
+      <!-- CUSTOMIZE: replace email + subject text -->
+      <a href="mailto:careers@yourstudio.com?subject=Application%20-%20Assistant%20Sound%20Engineer" class="btn btn-ghost">Apply</a>
+    </div>
+
+    <div class="career">
+      <div>
+        <h4>----------------</h4>
+        <span>--------- · --------</span>
+      </div>
+      <a href="mailto:careers@yourstudio.com?subject=Application%20-%20Studio%20Intern" class="btn btn-ghost">Apply</a>
+    </div>
+
+    <!-- Duplicate a .career block for each additional opening -->
+
+  </div>
+</section>
+
+<!-- =========================================================
+     CONTACT & SOCIAL LINKS
+     CUSTOMIZE: email, phone, address, and every social href
+     below (replace the "#" placeholders with your real links).
+     ========================================================= -->
+<section id="contact">
+  <div class="section-head">
+    <span class="eyebrow">Get in touch</span>
+    <h2>Contact</h2>
+    <p>Booking, questions, or just saying hi.</p>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-list">
+
+      <a class="contact-row" href="mailto:hello@yourstudio.com">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4z"/><path d="M4 4l8 8 8-8"/></svg>
+        <span><span class="label">Email</span><span class="value">sapthaka7@gmail.com</span></span>
+      </a>
+
+      <a class="contact-row" href="tel:+910000000000">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2.1.7 3.1a2 2 0 0 1-.5 2L8 10.1a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2-.5c1 .3 2 .6 3.1.7a2 2 0 0 1 1.6 2z"/></svg>
+        <span><span class="label">Phone</span><span class="value">+91 81054 12076</span></span>
+      </a>
+
+      <div class="contact-row" style="cursor:default;">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+        <span><span class="label">Studio address</span><span class="value">Bengaluru, Karnataka </span></span>
+      </div>
+
+      <div style="margin-top:20px;">
+        <span class="eyebrow" style="margin-bottom:12px;">Follow along</span>
+        <div class="socials">
+          <!-- CUSTOMIZE: replace each # with your real profile URL -->
+          <a class="social-btn" href="https://www.instagram.com/sapthakatheband?utm_source=qr&igsh=cDZydjl1a3VlMWVz" aria-label="Instagram" title="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+          </a>
+          <a class="social-btn" href="https://youtube.com/@sapthakastudios?si=GMaULHUR1Ek7-eIp#" aria-label="YouTube" title="YouTube">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <!--
+          <a class="social-btn" href="#" aria-label="Facebook" title="Facebook">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 7h2V3h-2a4 4 0 0 0-4 4v3H8v4h3v7h4v-7h3l1-4h-4V7a1 1 0 0 1 1-1z"/></svg>
+          </a>
+          <a class="social-btn" href="#" aria-label="Spotify" title="Spotify">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M7.5 10c3-1 6.5-.7 9 .8M7.5 13c2.3-.7 5-.5 7 .7M8 16c1.8-.5 3.7-.4 5.2.4"/></svg>
+          </a>
+          -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Optional embedded map placeholder — offline-safe (no iframe/network call).
+         If you later host this online, you can swap this div for a Google Maps <iframe>. -->
+    <div style="border:1px solid var(--line); border-radius:4px; background:var(--surface); min-height:260px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:13px; text-align:center; padding:20px;">
+      Map preview isn't available offline.<br>Add your address above, or embed a live map once the site is hosted online.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <!-- CUSTOMIZE: studio name + year -->
+  © Sapthaka Studio 2026 — Built for the crew, by the crew.
+</footer>
+
+<script>
+/* =========================================================
+   JS — no external libraries, works fully offline.
+   Nothing below needs customization, it just powers the
+   mobile menu, the gallery lightbox, and the hero waveform.
+   ========================================================= */
+
+// Mobile nav toggle
+document.getElementById('navToggle').addEventListener('click', function(){
+  document.getElementById('navMenu').classList.toggle('open');
+});
+// close mobile menu after a link is tapped
+document.querySelectorAll('#navMenu a').forEach(function(link){
+  link.addEventListener('click', function(){
+    document.getElementById('navMenu').classList.remove('open');
+  });
+});
+
+// Generate the animated waveform bars
+(function(){
+  var wf = document.getElementById('waveform');
+  var barCount = 60;
+  for (var i = 0; i < barCount; i++){
+    var bar = document.createElement('i');
+    bar.style.animationDelay = (Math.random() * 1.8).toFixed(2) + 's';
+    bar.style.animationDuration = (1.2 + Math.random() * 1.2).toFixed(2) + 's';
+    wf.appendChild(bar);
+  }
+})();
+
+// Gallery lightbox
+var lightbox = document.getElementById('lightbox');
+var lightboxContent = document.getElementById('lightboxContent');
+document.querySelectorAll('.gallery-item').forEach(function(item){
+  item.addEventListener('click', function(){
+    var type = item.getAttribute('data-type');
+    var src = item.getAttribute('data-src');
+    lightboxContent.innerHTML = '';
+    var el;
+    if (type === 'video'){
+      el = document.createElement('video');
+      el.src = src; el.controls = true; el.autoplay = true;
+    } else {
+      el = document.createElement('img');
+      el.src = src;
+    }
+    lightboxContent.appendChild(el);
+    lightbox.classList.add('open');
+  });
+});
+document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+lightbox.addEventListener('click', function(e){ if (e.target === lightbox) closeLightbox(); });
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeLightbox(); });
+function closeLightbox(){
+  lightbox.classList.remove('open');
+  lightboxContent.innerHTML = '';
+}
+</script>
+
+</body>
+</html>

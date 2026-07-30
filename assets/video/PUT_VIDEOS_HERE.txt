@@ -1,0 +1,1 @@
+Put past-event video clips here (e.g. event-clip1.mp4). Referenced in index.html gallery section.
