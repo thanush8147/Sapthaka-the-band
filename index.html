@@ -18,14 +18,14 @@
    file directly by double-clicking index.html).
    ========================================================= */
 :root{
-  --bg:        #18191c;   /* deep charcoal */
-  --surface:   #212327;   /* card/panel background */
-  --surface-2: #2a2c31;   /* slightly lighter panel */
-  --line:      #3a3d43;   /* hairline borders */
-  --text:      #e8ebf0;   /* moonlit silver-white */
-  --muted:     #98a0ab;   /* cool grey for secondary text */
-  --amber:     #e8303c;   /* signal red (primary accent) */
-  --copper:    #b8c0cc;   /* silver (secondary accent) */
+  --bg:        #f1ece3;   /* warm off-white paper */
+  --surface:   #faf7f1;   /* cards/panels */
+  --surface-2: #e3dccf;   /* photo placeholder */
+  --line:      #d2cabb;   /* hairline borders */
+  --text:      #141414;   /* near-black, like their icons */
+  --muted:     #6b665e;   /* secondary text */
+  --amber:     #c8281f;   /* logo red (primary accent) */
+  --copper:    #8c1913;   /* deeper red (secondary accent) */
 
   --display: Georgia, 'Times New Roman', serif;
   --body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
@@ -66,8 +66,23 @@ header{
   max-width: 1120px; margin: 0 auto; padding: 16px 24px;
   display:flex; align-items:center; justify-content: space-between;
 }
-.logo{ font-family: var(--display); font-size: 20px; letter-spacing: 1px; }
-.logo span{ color: var(--amber); }
+.logo{
+  position:relative; display:inline-flex; align-items:center;
+  text-decoration:none; color: var(--amber); line-height:1; padding-left:18px;
+}
+.logo-mark{
+  position:absolute; left:0; top:50%; transform:translateY(-50%);
+  font-family: 'Snell Roundhand','Brush Script MT','Segoe Script',cursive;
+  font-style: italic; font-size:58px; opacity:.22; pointer-events:none;
+}
+.logo-text{
+  position:relative; font-family: var(--display); font-weight:700;
+  font-size:20px; letter-spacing:3px; text-transform:uppercase;
+}
+.logo-text small{
+  display:block; font-size:10px; font-weight:400;
+  letter-spacing:4px; text-transform:lowercase;
+}
 nav ul{ list-style:none; display:flex; gap: 28px; }
 nav a{
   text-decoration:none; font-size: 14px; color: var(--muted);
@@ -262,7 +277,7 @@ footer{
      ========================================================= -->
 <header>
   <div class="nav-wrap">
-    <div class="logo">SAPTHAKA</div>
+    <a href="#" class="logo"><img src="assets/images/gallery/logo.jpeg" alt="Sapthaka" style="height:40px;"></a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
     </button>
